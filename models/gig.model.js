@@ -70,4 +70,4 @@ const gigSchema = new Schema(
 
 const Gig = model("gig", gigSchema);
 
-module.exports = { Gig };
+module.exports = Gig;

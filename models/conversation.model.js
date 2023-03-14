@@ -35,4 +35,4 @@ const conversationSchema = new Schema(
 
 const Conversation = model("conversation", conversationSchema);
 
-module.exports = { Conversation };
+module.exports = Conversation;

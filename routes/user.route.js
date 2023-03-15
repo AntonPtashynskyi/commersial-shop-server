@@ -1,8 +1,9 @@
 const express = require("express");
-const { fn } = require("../controllers/user.controller");
+const { deleteUser } = require("../controllers/user.controller");
+const { verifyToken } = require("../middleware/jwt");
 
 const router = express.Router();
 
-router.get("/", fn);
+router.delete("/:id", verifyToken, deleteUser);
 
 module.exports = router;

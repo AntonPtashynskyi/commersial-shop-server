@@ -1,5 +1,8 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const { JWT_KEY } = process.env;
 
 const register = async (req, res) => {
   try {
@@ -21,12 +24,14 @@ const login = async (req, res) => {
     if (!user) return res.status(400).send("User doesn't exist");
 
     const isCorrect = bcrypt.compareSync(req.body.password, user.password);
-    if (!isCorrect)
+    if (!isCorrect) {
       return res.status(404).send("Email or password isn't correct");
+    }
 
-    // const { email, name, country } = user;
+    const token = jwt.sign({ id: user._id, isSeller: user.isSeller }, JWT_KEY);
+
     const { password, ...info } = user._doc;
-    res.status(200).send(info);
+    res.cookie("accessToken", token, { httpOnly: true }).status(200).send(info);
   } catch (error) {
     res.status(500).send("Something went wrong");
   }

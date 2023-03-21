@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const authRoute = require("./routes/auth.route");
 const userRoute = require("./routes/user.route");
@@ -24,7 +25,11 @@ const connect = async () => {
   }
 };
 
-app.use(express.json(), cookieParser());
+app.use(
+  cors({ origin: "http://localhost:5173", credentials: true }),
+  express.json(),
+  cookieParser()
+);
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
@@ -33,6 +38,15 @@ app.use("/api/orders", orderRoute);
 app.use("/api/conversations", conversationRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/reviews", reviewRoute);
+
+app.use((err, req, res, next) => {
+  console.log(err.status);
+  console.log(err.message);
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Internal server Error";
+
+  return res.status(errorStatus).send(errorMessage);
+});
 
 app.listen(PORT, () => {
   connect();
